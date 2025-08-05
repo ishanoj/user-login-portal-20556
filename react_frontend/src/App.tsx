@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import LoginForm from './LoginForm';
 
 // PUBLIC_INTERFACE
 const App: React.FC = () => {
@@ -16,9 +16,17 @@ const App: React.FC = () => {
     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
+  // Dummy login handler can be replaced with real login API in the future
+  // PUBLIC_INTERFACE
+  const handleLogin = (credentials: { usernameOrEmail: string; password: string }) => {
+    // For now, simply output to console (replace with API logic later)
+    // eslint-disable-next-line no-console
+    console.log('Login attempt:', credentials);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
+      <header className="App-header" style={{ padding: 0, justifyContent: "flex-start", minHeight: "100vh" }}>
         <button 
           className="theme-toggle" 
           onClick={toggleTheme}
@@ -26,21 +34,7 @@ const App: React.FC = () => {
         >
           {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
         </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <LoginForm onLogin={handleLogin} />
       </header>
     </div>
   );
