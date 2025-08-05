@@ -9,17 +9,25 @@ export interface LoginFormProps {
 /**
  * LoginForm component renders a centered login form with username/email and password fields.
  * Performs client-side validation and displays errors for empty fields.
+ * For demonstration, checks credentials against mock values and displays a message.
  */
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+  // State
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ usernameOrEmail: false, password: false });
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+
+  // Hardcoded mock credentials
+  const MOCK_USERNAME = "testuser";
+  const MOCK_PASSWORD = "testpass";
 
   // PUBLIC_INTERFACE
   const validate = (): boolean => {
     if (!usernameOrEmail || !password) {
       setError("Both fields are required.");
+      setSuccess(false);
       return false;
     }
     setError(null);
@@ -30,7 +38,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setTouched({ usernameOrEmail: true, password: true });
-    if (validate() && onLogin) {
+    if (!validate()) {
+      setSuccess(false);
+      return;
+    }
+
+    // Check credentials against mock data
+    if (
+      usernameOrEmail === MOCK_USERNAME &&
+      password === MOCK_PASSWORD
+    ) {
+      setError(null);
+      setSuccess(true);
+    } else {
+      setError("Invalid username or password.");
+      setSuccess(false);
+    }
+
+    // Call parent login handler if provided, for demonstration use
+    if (onLogin) {
       onLogin({ usernameOrEmail, password });
     }
   };
@@ -73,9 +99,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           )}
         </div>
         {error && <div className="error-message">{error}</div>}
+        {success && <div className="error-message" style={{ color: '#24aa4a' }}>Login successful!</div>}
         <button data-testid="submit" className="login-button" type="submit">
           Log In
         </button>
+        <div style={{ fontSize: "0.85em", color: "#666", marginTop: "10px", textAlign: "center" }}>
+          <span>
+            <strong>Mock credentials:</strong> <br />
+            Username: <code>testuser</code>
+            {" | "}
+            Password: <code>testpass</code>
+          </span>
+        </div>
       </form>
     </div>
   );
